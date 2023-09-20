@@ -1,0 +1,30 @@
+---
+- name: Install and start Docker
+  hosts: test1
+  become: true
+  
+  tasks:
+    - name: Update apt and install docker
+      apt: update_cache=yes name=docker.io state=latest
+
+    - name: Docker started
+      service: 
+        name: docker 
+        state: started
+        enabled: yes
+        
+    - name: Install docker-compose
+      command: curl -L "https://github.com/docker/compose/releases/download/v2.6.1/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
+      
+    - name: Making the docker-compose file executable
+      command: chmod +x /usr/local/bin/docker-compose
+        
+    - name: Copy files
+      copy:
+        src: /home/cb1t/2ans/3test/files
+        dest: ~/2ans/
+        mode: preserve
+        
+    - name: start docker-compose
+      command: docker-compose -f /root/2ans/files/docker-compose.yml up -d
+    
